@@ -45,10 +45,10 @@ const oportunidades = [
 export function AlunoDashboard({ onNavigate }: AlunoDashboardProps) {
   return (
     <div className="space-y-6">
-      <div>
-        <h1>Dashboard do Aluno</h1>
+      <div className="bg-white border-l-4 border-blue-900 p-4 rounded-r-lg shadow-sm">
+        <h1 className="text-blue-900">Painel do Discente</h1>
         <p className="text-muted-foreground">
-          Acompanhe suas horas e participe de oportunidades de extensão
+          Acompanhe suas horas e participe de oportunidades de extensão universitária
         </p>
       </div>
 

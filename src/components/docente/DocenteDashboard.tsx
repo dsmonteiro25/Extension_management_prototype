@@ -75,8 +75,8 @@ export function DocenteDashboard({ onNavigate }: DocenteDashboardProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1>Dashboard do Docente</h1>
+      <div className="bg-white border-l-4 border-blue-900 p-4 rounded-r-lg shadow-sm">
+        <h1 className="text-blue-900">Painel do Docente</h1>
         <p className="text-muted-foreground">
           Gerencie solicitações, oportunidades e grupos de discentes
         </p>

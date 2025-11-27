@@ -3,8 +3,9 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { GraduationCap, Mail, KeyRound } from 'lucide-react';
+import { Mail, KeyRound } from 'lucide-react';
 import type { User } from '../App';
+import logoUfma from 'figma:asset/16a018f002fbeb5508e0814ec34593c255b2ec3d.png';
 
 type LoginProps = {
   onLogin: (user: User) => void;
@@ -45,28 +46,29 @@ export function Login({ onLogin }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="space-y-4 text-center">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
-            <GraduationCap className="w-10 h-10 text-white" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 p-4">
+      <Card className="w-full max-w-md shadow-2xl">
+        <CardHeader className="space-y-4 text-center pb-6">
+          <div className="mx-auto w-24 h-24 bg-white rounded-full flex items-center justify-center p-2 shadow-lg">
+            <img src={logoUfma} alt="UFMA" className="w-full h-full object-contain" />
           </div>
           <div>
-            <CardTitle className="text-2xl">Sistema de Extensão</CardTitle>
-            <CardDescription className="mt-2">
-              Acesso unificado para aluno, docente e coordenação
+            <CardTitle className="text-2xl text-blue-900">SIGEX - UFMA</CardTitle>
+            <p className="text-base mt-2">Sistema Integrado de Gestão de Extensão</p>
+            <CardDescription className="mt-3">
+              Universidade Federal do Maranhão
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email institucional ou matrícula</Label>
+            <Label htmlFor="email">Matrícula ou Email Institucional</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="email"
                 type="text"
-                placeholder="seu.email@universidade.edu.br"
+                placeholder="123456789 ou usuario@discente.ufma.br"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10"
@@ -76,13 +78,13 @@ export function Login({ onLogin }: LoginProps) {
           </div>
 
           {!codeSent ? (
-            <Button onClick={handleSendCode} className="w-full" disabled={!email}>
+            <Button onClick={handleSendCode} className="w-full bg-blue-900 hover:bg-blue-800" disabled={!email}>
               Enviar código
             </Button>
           ) : (
             <>
               <div className="space-y-2">
-                <Label htmlFor="code">Código recebido por email</Label>
+                <Label htmlFor="code">Código de Verificação</Label>
                 <div className="relative">
                   <KeyRound className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -97,8 +99,8 @@ export function Login({ onLogin }: LoginProps) {
                 </div>
               </div>
 
-              <Button onClick={handleLogin} className="w-full" disabled={code.length < 4}>
-                Entrar
+              <Button onClick={handleLogin} className="w-full bg-blue-900 hover:bg-blue-800" disabled={code.length < 4}>
+                Entrar no Sistema
               </Button>
 
               <Button
@@ -109,22 +111,27 @@ export function Login({ onLogin }: LoginProps) {
                 }}
                 className="w-full"
               >
-                Usar outro email
+                Usar outra matrícula
               </Button>
             </>
           )}
 
-          <div className="pt-4 border-t text-center text-sm text-muted-foreground">
-            <p>Para testar:</p>
-            <p className="mt-1">
-              <span className="font-medium">Aluno:</span> aluno@edu.br
-            </p>
-            <p>
-              <span className="font-medium">Docente:</span> docente@edu.br
-            </p>
-            <p>
-              <span className="font-medium">Coordenação:</span> coord@edu.br
-            </p>
+          <div className="pt-4 border-t text-center text-sm text-muted-foreground space-y-2">
+            <p className="font-medium">Acesso unificado para:</p>
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="p-2 bg-slate-50 rounded">
+                <p className="font-medium">Discente</p>
+                <p className="text-muted-foreground">aluno@edu.br</p>
+              </div>
+              <div className="p-2 bg-slate-50 rounded">
+                <p className="font-medium">Docente</p>
+                <p className="text-muted-foreground">docente@edu.br</p>
+              </div>
+              <div className="p-2 bg-slate-50 rounded">
+                <p className="font-medium">Coordenação</p>
+                <p className="text-muted-foreground">coord@edu.br</p>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

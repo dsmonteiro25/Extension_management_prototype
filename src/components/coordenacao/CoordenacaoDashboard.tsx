@@ -28,10 +28,10 @@ const solicitacoesPrioritarias = [
 export function CoordenacaoDashboard({ onNavigate }: CoordenacaoDashboardProps) {
   return (
     <div className="space-y-6">
-      <div>
-        <h1>Dashboard da Coordenação</h1>
+      <div className="bg-white border-l-4 border-blue-900 p-4 rounded-r-lg shadow-sm">
+        <h1 className="text-blue-900">Painel da Coordenação</h1>
         <p className="text-muted-foreground">
-          Visão geral das atividades de extensão
+          Visão geral das atividades de extensão universitária - UFMA
         </p>
       </div>
 

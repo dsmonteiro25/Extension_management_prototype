@@ -11,10 +11,12 @@ import {
   Award,
   CheckCircle,
   PlusCircle,
+  GraduationCap,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import type { User } from '../App';
+import logoUfma from 'figma:asset/16a018f002fbeb5508e0814ec34593c255b2ec3d.png';
 
 // Dashboards
 import { AlunoDashboard } from './aluno/AlunoDashboard';
@@ -144,40 +146,43 @@ export function DashboardLayout({ user, currentPage, onNavigate, onLogout }: Das
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-40">
+      <header className="fixed top-0 left-0 right-0 h-16 bg-blue-900 border-b border-blue-800 z-40">
         <div className="h-full px-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden text-white hover:bg-blue-800"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center p-1.5">
+                <img src={logoUfma} alt="UFMA" className="w-full h-full object-contain" />
               </div>
-              <span className="hidden sm:inline">Sistema de Extensão</span>
+              <div className="hidden sm:block">
+                <p className="text-white font-medium text-sm">SIGEX - UFMA</p>
+                <p className="text-blue-200 text-xs">Sistema de Gestão de Extensão</p>
+              </div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="hidden md:block text-right">
-              <p className="text-sm">{user.name}</p>
-              <p className="text-xs text-muted-foreground">
-                {user.role === 'ALUNO' && 'Aluno'}
+              <p className="text-sm text-white">{user.name}</p>
+              <p className="text-xs text-blue-200">
+                {user.role === 'ALUNO' && 'Discente'}
                 {user.role === 'DOCENTE' && 'Docente'}
                 {user.role === 'COORDENACAO' && 'Coordenação'}
               </p>
             </div>
             <Avatar>
-              <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
+              <AvatarFallback className="bg-blue-700 text-white">
                 {user.name.split(' ').map((n) => n[0]).join('').substring(0, 2)}
               </AvatarFallback>
             </Avatar>
-            <Button variant="ghost" size="icon" onClick={onLogout}>
+            <Button variant="ghost" size="icon" onClick={onLogout} className="text-white hover:bg-blue-800">
               <LogOut className="w-5 h-5" />
             </Button>
           </div>
@@ -200,12 +205,12 @@ export function DashboardLayout({ user, currentPage, onNavigate, onLogout }: Das
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 currentPage === item.id
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-slate-700 hover:bg-slate-50'
+                  ? 'bg-blue-900 text-white'
+                  : 'text-slate-700 hover:bg-blue-50 hover:text-blue-900'
               }`}
             >
               {item.icon}
-              <span>{item.label}</span>
+              <span className="text-sm">{item.label}</span>
             </button>
           ))}
         </nav>
