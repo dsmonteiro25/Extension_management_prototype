@@ -12,11 +12,18 @@ import {
   CheckCircle,
   PlusCircle,
   GraduationCap,
+  Shield,
+  UserCircle,
+  MessageCircle,
+  Star,
+  AlertCircle,
+  HelpCircle,
+  Settings,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import type { User } from '../App';
-import logoUfma from '../assets/ufma.png';
+import logoUfma from 'figma:asset/16a018f002fbeb5508e0814ec34593c255b2ec3d.png';
 
 // Dashboards
 import { AlunoDashboard } from './aluno/AlunoDashboard';
@@ -36,6 +43,25 @@ import { GruposDiscentes } from './shared/GruposDiscentes';
 // Coordenação pages
 import { AnaliseSolicitacoes } from './coordenacao/AnaliseSolicitacoes';
 import { Relatorios } from './coordenacao/Relatorios';
+
+// Admin pages
+import { GestaoPermissoes } from './admin/GestaoPermissoes';
+import { LogsAuditoria } from './admin/LogsAuditoria';
+import { ImportarUsuarios } from './admin/ImportarUsuarios';
+
+// Perfil pages
+import { MeuPerfil } from './perfil/MeuPerfil';
+
+// Comunicação pages
+import { ComunicacaoInterna } from './comunicacao/ComunicacaoInterna';
+import { AvaliacoesFeedback } from './comunicacao/AvaliacoesFeedback';
+import { Ouvidoria } from './comunicacao/Ouvidoria';
+
+// Ajuda
+import { FAQ } from './ajuda/FAQ';
+
+// Shared
+import { BotaoAcessibilidade } from './shared/BotaoAcessibilidade';
 
 type DashboardLayoutProps = {
   user: User;
@@ -106,6 +132,54 @@ const navigationItems: NavItem[] = [
     icon: <BarChart3 className="w-5 h-5" />,
     roles: ['COORDENACAO'],
   },
+  {
+    id: 'gestao-permissoes',
+    label: 'Gestão de Permissões',
+    icon: <Shield className="w-5 h-5" />,
+    roles: ['ADMIN'],
+  },
+  {
+    id: 'logs-auditoria',
+    label: 'Logs de Auditoria',
+    icon: <AlertCircle className="w-5 h-5" />,
+    roles: ['ADMIN'],
+  },
+  {
+    id: 'importar-usuarios',
+    label: 'Importar Usuários',
+    icon: <UserCircle className="w-5 h-5" />,
+    roles: ['ADMIN'],
+  },
+  {
+    id: 'meu-perfil',
+    label: 'Meu Perfil',
+    icon: <Settings className="w-5 h-5" />,
+    roles: ['ALUNO', 'DOCENTE', 'COORDENACAO', 'ADMIN'],
+  },
+  {
+    id: 'comunicacao-interna',
+    label: 'Comunicação Interna',
+    icon: <MessageCircle className="w-5 h-5" />,
+    roles: ['ALUNO', 'DOCENTE', 'COORDENACAO', 'ADMIN'],
+  },
+  {
+    id: 'avaliacoes-feedback',
+    label: 'Avaliações e Feedback',
+    icon: <Star className="w-5 h-5" />,
+    roles: ['ALUNO', 'DOCENTE', 'COORDENACAO', 'ADMIN'],
+  },
+  {
+    id: 'ouvidoria',
+    label: 'Ouvidoria',
+    icon: <HelpCircle className="w-5 h-5" />,
+    roles: ['ALUNO', 'DOCENTE', 'COORDENACAO', 'ADMIN'],
+  },
+  {
+    id: 'faq',
+    label: 'FAQ',
+    icon: <HelpCircle className="w-5 h-5" />,
+    roles: ['ALUNO', 'DOCENTE', 'COORDENACAO', 'ADMIN'],
+  },
 ];
 
 export function DashboardLayout({ user, currentPage, onNavigate, onLogout }: DashboardLayoutProps) {
@@ -138,6 +212,22 @@ export function DashboardLayout({ user, currentPage, onNavigate, onLogout }: Das
         return <AnaliseSolicitacoes userRole={user.role} />;
       case 'relatorios':
         return <Relatorios />;
+      case 'gestao-permissoes':
+        return <GestaoPermissoes />;
+      case 'logs-auditoria':
+        return <LogsAuditoria />;
+      case 'importar-usuarios':
+        return <ImportarUsuarios />;
+      case 'meu-perfil':
+        return <MeuPerfil user={user} />;
+      case 'comunicacao-interna':
+        return <ComunicacaoInterna />;
+      case 'avaliacoes-feedback':
+        return <AvaliacoesFeedback />;
+      case 'ouvidoria':
+        return <Ouvidoria />;
+      case 'faq':
+        return <FAQ />;
       default:
         return <div>Página não encontrada</div>;
     }
@@ -175,6 +265,7 @@ export function DashboardLayout({ user, currentPage, onNavigate, onLogout }: Das
                 {user.role === 'ALUNO' && 'Discente'}
                 {user.role === 'DOCENTE' && 'Docente'}
                 {user.role === 'COORDENACAO' && 'Coordenação'}
+                {user.role === 'ADMIN' && 'Admin'}
               </p>
             </div>
             <Avatar>
@@ -228,6 +319,9 @@ export function DashboardLayout({ user, currentPage, onNavigate, onLogout }: Das
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
+      {/* Botão de Acessibilidade (RF45) */}
+      <BotaoAcessibilidade />
     </div>
   );
 }
