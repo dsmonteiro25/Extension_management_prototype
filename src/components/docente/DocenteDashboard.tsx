@@ -1,25 +1,24 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import {
-  FileText,
-  Briefcase,
-  Users,
+  AlertCircle,
   CheckCircle,
-  X,
   Clock,
+  X,
+  Users,
+  Briefcase,
+  TrendingUp,
+  Award,
+  Calendar,
+  Activity,
+  ArrowRight,
 } from 'lucide-react';
-import { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
+import { motion } from 'motion/react';
 
 type DocenteDashboardProps = {
   onNavigate: (page: string) => void;
@@ -29,37 +28,34 @@ type Solicitacao = {
   id: number;
   aluno: string;
   titulo: string;
-  ch: number;
+  cargaHoraria: number;
   data: string;
 };
 
-const solicitacoesPendentes: Solicitacao[] = [
-  {
-    id: 1,
-    aluno: 'Maria Silva',
-    titulo: 'Workshop de Design Thinking',
-    ch: 16,
-    data: '23/11/2024',
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
   },
-  {
-    id: 2,
-    aluno: 'João Santos',
-    titulo: 'Curso de React e TypeScript',
-    ch: 40,
-    data: '24/11/2024',
-  },
-  {
-    id: 3,
-    aluno: 'Ana Costa',
-    titulo: 'Hackathon Regional',
-    ch: 24,
-    data: '25/11/2024',
-  },
-];
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 },
+};
 
 export function DocenteDashboard({ onNavigate }: DocenteDashboardProps) {
   const [rejeitarDialog, setRejeitarDialog] = useState<Solicitacao | null>(null);
   const [parecer, setParecer] = useState('');
+
+  const solicitacoesPendentes: Solicitacao[] = [
+    { id: 1, aluno: 'Maria Silva', titulo: 'Oficina de Inovação Social', cargaHoraria: 20, data: '20/11/2024' },
+    { id: 2, aluno: 'João Santos', titulo: 'Congresso de Extensão', cargaHoraria: 16, data: '22/11/2024' },
+    { id: 3, aluno: 'Ana Costa', titulo: 'Projeto Comunitário', cargaHoraria: 12, data: '25/11/2024' },
+  ];
 
   const handleAprovar = (id: number) => {
     alert(`Solicitação ${id} aprovada!`);
@@ -75,22 +71,40 @@ export function DocenteDashboard({ onNavigate }: DocenteDashboardProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border-l-4 border-blue-900 p-4 rounded-r-lg shadow-sm">
-        <h1 className="text-blue-900">Painel do Docente</h1>
-        <p className="text-muted-foreground">
-          Gerencie solicitações, oportunidades e grupos de discentes
-        </p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-900 border-l-4 border-purple-400 p-6 rounded-r-lg shadow-lg text-white"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-white text-2xl mb-2">Painel do Docente</h1>
+            <p className="text-blue-100">
+              Gerencie solicitações, oportunidades e grupos de discentes
+            </p>
+          </div>
+          <div className="hidden md:block">
+            <div className="w-20 h-20 bg-white/10 backdrop-blur rounded-full flex items-center justify-center">
+              <Activity className="w-10 h-10 text-purple-400" />
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Cards de Status */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div
+        initial="hidden"
+        animate="show"
+        variants={container}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
         <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => onNavigate('analise')}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm">Solicitações Pendentes</CardTitle>
             <Clock className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl">{solicitacoesPendentes.length}</div>
+            <div className="text-2xl">3</div>
             <p className="text-xs text-muted-foreground">aguardando análise</p>
           </CardContent>
         </Card>
@@ -127,7 +141,7 @@ export function DocenteDashboard({ onNavigate }: DocenteDashboardProps) {
             <p className="text-xs text-muted-foreground">grupos gerenciados</p>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Ação Rápida */}
       <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
@@ -166,7 +180,7 @@ export function DocenteDashboard({ onNavigate }: DocenteDashboardProps) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="font-medium">{solicitacao.aluno}</h4>
-                    <Badge variant="secondary">{solicitacao.ch}h</Badge>
+                    <Badge variant="secondary">{solicitacao.cargaHoraria}h</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">
                     {solicitacao.titulo}
