@@ -42,7 +42,7 @@ const minhasDenuncias: Denuncia[] = [
 ];
 
 export function Ouvidoria() {
-  const [tipo, setTipo] = useState('');
+  const [tipo, setTipo] = useState('denuncia');
   const [descricao, setDescricao] = useState('');
   const [anonimo, setAnonimo] = useState(false);
   const [email, setEmail] = useState('');
@@ -53,7 +53,7 @@ export function Ouvidoria() {
       setEnviado(true);
       setTimeout(() => {
         setEnviado(false);
-        setTipo('');
+        setTipo('denuncia');
         setDescricao('');
         setEmail('');
       }, 3000);
