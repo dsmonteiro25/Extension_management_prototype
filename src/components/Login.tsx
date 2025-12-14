@@ -5,7 +5,7 @@ import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Mail, KeyRound } from 'lucide-react';
 import type { User } from '../App';
-import logoUfma from 'figma:asset/16a018f002fbeb5508e0814ec34593c255b2ec3d.png';
+import logoUfma from '../assets/ufma.png';
 
 type LoginProps = {
   onLogin: (user: User) => void;

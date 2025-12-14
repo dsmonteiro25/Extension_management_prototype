@@ -23,7 +23,8 @@ import {
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import type { User } from '../App';
-import logoUfma from 'figma:asset/16a018f002fbeb5508e0814ec34593c255b2ec3d.png';
+import logoUfma from '../assets/ufma.png';
+
 
 // Dashboards
 import { AlunoDashboard } from './aluno/AlunoDashboard';
