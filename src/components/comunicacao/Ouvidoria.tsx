@@ -12,9 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Badge } from '../ui/badge';
-import { AlertCircle, CheckCircle, Shield, Send } from 'lucide-react';
+import { AlertCircle, CheckCircle, Shield, Send, Clock, MessageSquare, User } from 'lucide-react';
 
 type Denuncia = {
   id: string;
@@ -22,6 +29,13 @@ type Denuncia = {
   status: 'aberta' | 'em_analise' | 'resolvida';
   data: string;
   anonima: boolean;
+  descricao?: string;
+  resposta?: string;
+  historico?: Array<{
+    data: string;
+    status: string;
+    mensagem: string;
+  }>;
 };
 
 const minhasDenuncias: Denuncia[] = [
@@ -31,6 +45,19 @@ const minhasDenuncias: Denuncia[] = [
     status: 'em_analise',
     data: '25/11/2024',
     anonima: false,
+    descricao: 'Identifiquei irregularidades na divulgação de uma oportunidade de extensão. As informações sobre os critérios de seleção não estão claras e o prazo foi alterado sem notificação prévia aos interessados.',
+    historico: [
+      {
+        data: '25/11/2024 14:30',
+        status: 'Solicitação recebida',
+        mensagem: 'Sua solicitação foi registrada e está aguardando análise inicial.',
+      },
+      {
+        data: '26/11/2024 09:15',
+        status: 'Em análise',
+        mensagem: 'A equipe de ouvidoria iniciou a análise do caso. Estamos verificando as informações reportadas.',
+      },
+    ],
   },
   {
     id: '#OUV-2024-002',
@@ -38,6 +65,25 @@ const minhasDenuncias: Denuncia[] = [
     status: 'resolvida',
     data: '10/11/2024',
     anonima: true,
+    descricao: 'Sugiro a implementação de um sistema de notificações por email para avisar sobre novas oportunidades de extensão que correspondam ao perfil do aluno. Isso facilitaria muito o acompanhamento.',
+    resposta: 'Agradecemos pela sugestão! Informamos que essa funcionalidade já está em desenvolvimento e será implementada na próxima atualização do sistema, prevista para janeiro/2025.',
+    historico: [
+      {
+        data: '10/11/2024 16:20',
+        status: 'Solicitação recebida',
+        mensagem: 'Sua solicitação foi registrada e está aguardando análise inicial.',
+      },
+      {
+        data: '11/11/2024 10:00',
+        status: 'Em análise',
+        mensagem: 'Sua sugestão está sendo avaliada pela equipe técnica.',
+      },
+      {
+        data: '15/11/2024 11:45',
+        status: 'Resolvida',
+        mensagem: 'Solicitação foi analisada e respondida. Obrigado pela contribuição!',
+      },
+    ],
   },
 ];
 
@@ -47,6 +93,7 @@ export function Ouvidoria() {
   const [anonimo, setAnonimo] = useState(false);
   const [email, setEmail] = useState('');
   const [enviado, setEnviado] = useState(false);
+  const [denunciaDetalhes, setDenunciaDetalhes] = useState<Denuncia | null>(null);
 
   const handleEnviar = () => {
     if (tipo && descricao) {
@@ -260,7 +307,11 @@ export function Ouvidoria() {
                 </div>
                 <div className="flex items-center gap-3">
                   {getStatusBadge(denuncia.status)}
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDenunciaDetalhes(denuncia)}
+                  >
                     Ver Detalhes
                   </Button>
                 </div>
@@ -274,6 +325,114 @@ export function Ouvidoria() {
           )}
         </CardContent>
       </Card>
+
+      {/* Detalhes da Denúncia */}
+      {denunciaDetalhes && (
+        <Dialog open={true} onOpenChange={() => setDenunciaDetalhes(null)}>
+          <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-blue-900" />
+                Detalhes da Solicitação
+              </DialogTitle>
+              <DialogDescription>
+                Acompanhe o andamento e histórico da sua solicitação
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Informações Principais */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-blue-900">{denunciaDetalhes.id}</span>
+                    {denunciaDetalhes.anonima && (
+                      <Badge variant="outline" className="text-xs">
+                        <User className="h-3 w-3 mr-1" />
+                        Anônima
+                      </Badge>
+                    )}
+                  </div>
+                  {getStatusBadge(denunciaDetalhes.status)}
+                </div>
+                
+                <div className="bg-slate-50 p-3 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Tipo de Solicitação</p>
+                  <p className="font-medium">{denunciaDetalhes.tipo}</p>
+                </div>
+                
+                <div className="bg-slate-50 p-3 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Data de Envio</p>
+                  <p className="font-medium">{denunciaDetalhes.data}</p>
+                </div>
+              </div>
+
+              {/* Descrição */}
+              <div>
+                <h4 className="font-medium mb-2 flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-blue-900" />
+                  Descrição
+                </h4>
+                <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg text-sm">
+                  {denunciaDetalhes.descricao}
+                </div>
+              </div>
+
+              {/* Resposta da Ouvidoria */}
+              {denunciaDetalhes.resposta && (
+                <div>
+                  <h4 className="font-medium mb-2 flex items-center gap-2 text-green-700">
+                    <CheckCircle className="h-4 w-4" />
+                    Resposta da Ouvidoria
+                  </h4>
+                  <div className="bg-green-50 border border-green-100 p-4 rounded-lg text-sm">
+                    {denunciaDetalhes.resposta}
+                  </div>
+                </div>
+              )}
+
+              {/* Histórico de Análise */}
+              {denunciaDetalhes.historico && denunciaDetalhes.historico.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-blue-900" />
+                    Histórico de Análise
+                  </h4>
+                  <div className="space-y-3">
+                    {denunciaDetalhes.historico.map((item, index) => (
+                      <div key={index} className="border-l-2 border-blue-200 pl-4 py-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="outline" className="text-xs">
+                            {item.status}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">{item.data}</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{item.mensagem}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Aviso para solicitações em análise */}
+              {denunciaDetalhes.status === 'em_analise' && (
+                <Alert className="border-blue-200 bg-blue-50">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800">
+                    Sua solicitação está em análise. Você será notificado assim que houver atualizações.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+            
+            <div className="flex justify-end mt-4">
+              <Button onClick={() => setDenunciaDetalhes(null)}>
+                Fechar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

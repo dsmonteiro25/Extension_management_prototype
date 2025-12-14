@@ -3,6 +3,15 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '../ui/dialog';
+import { Alert, AlertDescription } from '../ui/alert';
+import {
   Clock,
   FileText,
   Briefcase,
@@ -13,8 +22,12 @@ import {
   Calendar,
   Target,
   ArrowRight,
+  Users,
+  MapPin,
+  Info,
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useState } from 'react';
 
 type AlunoDashboardProps = {
   onNavigate: (page: string) => void;
@@ -40,6 +53,10 @@ export function AlunoDashboard({ onNavigate }: AlunoDashboardProps) {
   const horasObrigatorias = 100;
   const progressoPercentual = (horasConcluidas / horasObrigatorias) * 100;
 
+  const [selectedOportunidade, setSelectedOportunidade] = useState<any>(null);
+  const [inscricoes, setInscricoes] = useState<number[]>([]);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
   const oportunidades = [
     {
       id: 1,
@@ -48,6 +65,10 @@ export function AlunoDashboard({ onNavigate }: AlunoDashboardProps) {
       cargaHoraria: 40,
       periodo: 'Jan - Abr 2025',
       vagas: 5,
+      descricao: 'Projeto de extensão voltado para o desenvolvimento sustentável de comunidades rurais, com foco em educação ambiental e práticas agroecológicas.',
+      requisitos: 'Disponibilidade aos sábados, interesse em questões ambientais',
+      local: 'Comunidades rurais de São Luís - MA',
+      dataInicio: '15/01/2025',
     },
     {
       id: 2,
@@ -56,6 +77,10 @@ export function AlunoDashboard({ onNavigate }: AlunoDashboardProps) {
       cargaHoraria: 30,
       periodo: 'Fev - Mai 2025',
       vagas: 8,
+      descricao: 'Ensino de programação básica e desenvolvimento de jogos educativos para jovens de escolas públicas, visando inclusão digital.',
+      requisitos: 'Conhecimento básico em programação, didática',
+      local: 'Escolas públicas de São Luís - MA',
+      dataInicio: '01/02/2025',
     },
     {
       id: 3,
@@ -64,11 +89,40 @@ export function AlunoDashboard({ onNavigate }: AlunoDashboardProps) {
       cargaHoraria: 35,
       periodo: 'Mar - Jun 2025',
       vagas: 3,
+      descricao: 'Ações de promoção à saúde, prevenção de doenças e educação em saúde em comunidades carentes, com palestras e atendimentos básicos.',
+      requisitos: 'Curso na área de saúde, empatia, trabalho em equipe',
+      local: 'Unidades Básicas de Saúde - São Luís - MA',
+      dataInicio: '10/03/2025',
     },
   ];
 
+  const handleInscrever = (oportunidade: any) => {
+    setSelectedOportunidade(oportunidade);
+  };
+
+  const confirmarInscricao = () => {
+    if (selectedOportunidade) {
+      setInscricoes([...inscricoes, selectedOportunidade.id]);
+      setSelectedOportunidade(null);
+      setShowSuccessAlert(true);
+      setTimeout(() => setShowSuccessAlert(false), 5000);
+    }
+  };
+
+  const isInscrito = (id: number) => inscricoes.includes(id);
+
   return (
     <div className="space-y-6">
+      {/* Alert de Sucesso */}
+      {showSuccessAlert && (
+        <Alert className="border-green-200 bg-green-50">
+          <CheckCircle2 className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">
+            Inscrição realizada com sucesso! Você receberá mais informações por email.
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -263,11 +317,127 @@ export function AlunoDashboard({ onNavigate }: AlunoDashboardProps) {
                   <Badge variant="secondary">{oportunidade.vagas} vagas</Badge>
                 </div>
               </div>
-              <Button>Inscrever-se</Button>
+              <Button
+                onClick={() => handleInscrever(oportunidade)}
+                disabled={isInscrito(oportunidade.id)}
+              >
+                {isInscrito(oportunidade.id) ? 'Inscrito' : 'Inscrever-se'}
+              </Button>
             </div>
           ))}
         </CardContent>
       </Card>
+
+      {/* Dialog de Inscrição */}
+      <Dialog open={selectedOportunidade !== null} onOpenChange={() => setSelectedOportunidade(null)}>
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Briefcase className="h-5 w-5 text-blue-900" />
+              {selectedOportunidade?.titulo}
+            </DialogTitle>
+            <DialogDescription>
+              Confira as informações da oportunidade e confirme sua inscrição
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {/* Informações Principais */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-slate-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-1">
+                  <Users className="h-4 w-4 text-blue-600" />
+                  <span className="text-xs text-muted-foreground">Coordenador</span>
+                </div>
+                <p className="text-sm font-medium">{selectedOportunidade?.docente}</p>
+              </div>
+              
+              <div className="bg-slate-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-1">
+                  <Clock className="h-4 w-4 text-amber-600" />
+                  <span className="text-xs text-muted-foreground">Carga Horária</span>
+                </div>
+                <p className="text-sm font-medium">{selectedOportunidade?.cargaHoraria} horas</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-slate-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-1">
+                  <Calendar className="h-4 w-4 text-green-600" />
+                  <span className="text-xs text-muted-foreground">Período</span>
+                </div>
+                <p className="text-sm font-medium">{selectedOportunidade?.periodo}</p>
+              </div>
+              
+              <div className="bg-slate-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-1">
+                  <Target className="h-4 w-4 text-purple-600" />
+                  <span className="text-xs text-muted-foreground">Vagas</span>
+                </div>
+                <p className="text-sm font-medium">{selectedOportunidade?.vagas} disponíveis</p>
+              </div>
+            </div>
+
+            {/* Local */}
+            <div className="bg-blue-50 border border-blue-100 p-3 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <MapPin className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">Local</span>
+              </div>
+              <p className="text-sm text-blue-800">{selectedOportunidade?.local}</p>
+            </div>
+
+            {/* Descrição */}
+            <div>
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Info className="h-4 w-4 text-blue-900" />
+                Descrição do Projeto
+              </h4>
+              <p className="text-sm text-muted-foreground bg-slate-50 p-3 rounded-lg">
+                {selectedOportunidade?.descricao}
+              </p>
+            </div>
+
+            {/* Requisitos */}
+            <div>
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                Requisitos
+              </h4>
+              <p className="text-sm text-muted-foreground bg-green-50 border border-green-100 p-3 rounded-lg">
+                {selectedOportunidade?.requisitos}
+              </p>
+            </div>
+
+            {/* Aviso */}
+            <Alert className="border-amber-200 bg-amber-50">
+              <AlertCircle className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-800 text-sm">
+                Ao confirmar a inscrição, você será contatado pelo docente responsável com as próximas instruções.
+              </AlertDescription>
+            </Alert>
+          </div>
+          
+          <DialogFooter className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setSelectedOportunidade(null)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              onClick={confirmarInscricao}
+              className="bg-blue-900 hover:bg-blue-800"
+            >
+              <CheckCircle2 className="h-4 w-4 mr-2" />
+              Confirmar Inscrição
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
